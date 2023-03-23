@@ -6,6 +6,7 @@ public class PlayerMovement : MonoBehaviour
 {
     float horizontalMove;
     public float speed = 5f;
+    public float climbSpeed = 0.5f;
 
     public Rigidbody2D myBody;
     public Animator myAnim;
@@ -20,6 +21,7 @@ public class PlayerMovement : MonoBehaviour
     public int wallSide;
 
     bool jump = false;
+    bool climb = false;
 
     public float castDist = 1f;
 
@@ -28,6 +30,10 @@ public class PlayerMovement : MonoBehaviour
     public float gravityFall = 5f; //falling
 
     public bool intimidate = false;
+
+    public AudioSource mySource;
+    public AudioClip scareSound;
+    public AudioClip pickupSound;
 
 
     // Start is called before the first frame update
@@ -52,9 +58,19 @@ public class PlayerMovement : MonoBehaviour
 
         horizontalMove = Input.GetAxis("Horizontal");
 
-        if (Input.GetButtonDown("Jump") && grounded || Input.GetButtonDown("Jump") && onWall)
+        if (Input.GetButtonDown("Jump") && grounded /*|| Input.GetButtonDown("Jump") && onWall*/)
         {
             jump = true;
+        }
+
+        if (Input.GetKey(KeyCode.Space) && onWall == true)
+        {
+            climb = true;
+        }
+
+        else
+        {
+            climb = false;
         }
 
         if (horizontalMove > 0.2f || horizontalMove < -0.2f)
@@ -113,6 +129,11 @@ public class PlayerMovement : MonoBehaviour
             jump = false;
         }
 
+        if (climb)
+        {
+            transform.position = new Vector3(transform.position.x, transform.position.y + climbSpeed, transform.position.z);
+        }
+
         if (myBody.velocity.y > 0)
         {
             myBody.gravityScale = gravityScale;
@@ -143,6 +164,7 @@ public class PlayerMovement : MonoBehaviour
 
         if(collision.gameObject.tag == "Butterfly" && intimidate == true)
         {
+            mySource.PlayOneShot(scareSound);
             Destroy(collision.gameObject);
         }
     }
@@ -165,12 +187,14 @@ public class PlayerMovement : MonoBehaviour
         if (collision.gameObject.tag == "Leaf1")
         {
             gameManager.score1 += 1;
+            mySource.PlayOneShot(pickupSound);
             Destroy(collision.gameObject);
         }
 
         if (collision.gameObject.tag == "Leaf2")
         {
             gameManager.score2 += 1;
+            mySource.PlayOneShot(pickupSound);
             Destroy(collision.gameObject);
         }
     }

@@ -44,7 +44,7 @@ public class GameManager : MonoBehaviour
 
         if (goal1Reached == true)
         {
-            SceneManager.LoadScene(1);
+            SceneManager.LoadScene("Scene 2");
             //area1Score.SetActive(false);
             //area2Score.SetActive(true);
         }
@@ -56,17 +56,17 @@ public class GameManager : MonoBehaviour
 
         if (goal2Reached == true)
         {
-            SceneManager.LoadScene(3);
+            SceneManager.LoadScene("Win Screen");
         }
 
         if (player.transform.position.y <= -15)
         {
-            SceneManager.LoadScene(2);
+            SceneManager.LoadScene("Lose Screen");
         }
     }
 
     public void buttonClick()
     {
-        SceneManager.LoadScene(0);
+        SceneManager.LoadScene("Scene 1");
     }
 }
